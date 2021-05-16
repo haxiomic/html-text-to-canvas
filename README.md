@@ -1,10 +1,16 @@
 # Draw HTML Text to Canvas
 
+<img width="300px" align="right" src="https://user-images.githubusercontent.com/3742992/118414852-df289980-b69e-11eb-93f3-37e12b512c7e.png">
+
 Given a HTML string or HTMLElement, `htmlTextToCanvas()` returns a canvas with a replica of the text, including fonts, layout, formatting and colors draw using Context 2D
 
 This technique leverages the browser's built-in text layout engine so all text layouts are supported
 
 For example, you may want to use this to easily generate formatted text for a WebGL game
+
+[Live demo](https://haxiomic.github.io/html-text-to-canvas/demo.html)
+
+-----
 
 ## API
 
