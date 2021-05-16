@@ -56,6 +56,44 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 		}
 	}
 
+	/**
+	 * Firefox currently does not generate a .font property after getComputedStyle so we much assemble one manually
+	 * See https://stackoverflow.com/a/58533415
+	 */
+	function getFontFromComputedStyle(computedStyle) {
+		let font = computedStyle.font;
+		// Firefox returns the empty string for .font, so create the .font property manually
+		if (font === '') {
+				// Firefox uses percentages for font-stretch, but Canvas does not accept percentages
+				// so convert to keywords, as listed at:
+				//   https://developer.mozilla.org/en-US/docs/Web/CSS/font-stretch
+				let fontStretchLookupTable = {
+						'50%': 'ultra-condensed',
+						'62.5%': 'extra-condensed',
+						'75%': 'condensed',
+						'87.5%': 'semi-condensed',
+						'100%': 'normal',
+						'112.5%': 'semi-expanded',
+						'125%': 'expanded',
+						'150%': 'extra-expanded',
+						'200%': 'ultra-expanded'
+				};
+				// If the retrieved font-stretch percentage isn't found in the lookup table, use
+				// 'normal' as a last resort.
+				let fontStretch = fontStretchLookupTable.hasOwnProperty(computedStyle.fontStretch)
+						? fontStretchLookupTable[computedStyle.fontStretch]
+						: 'normal';
+				font = computedStyle.fontStyle
+						+ ' ' + computedStyle.fontVariant
+						+ ' ' + computedStyle.fontWeight
+						+ ' ' + fontStretch
+						+ ' ' + computedStyle.fontSize
+						+ '/' + computedStyle.lineHeight
+						+ ' ' + computedStyle.fontFamily;
+		}
+		return font;
+	}
+
 	/** @type {HTMLElement} */
 	let el;
 	if (htmlOrElement instanceof HTMLElement) {
@@ -104,7 +142,7 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 
 		let style = window.getComputedStyle(span);
 
-		let fontSpecifier = style.font;
+		let fontSpecifier = getFontFromComputedStyle(style);
 
 		let fontSizeValue = parseFloat(style.fontSize);
 		let fontSizeUnit = /([a-z%]+)$/i.exec(style.fontSize)[1];
@@ -116,7 +154,7 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 			el.style.font = style.font;
 			el.style.fontSize = fontSizeValue * options.pixelRatio + fontSizeUnit;
 			document.body.appendChild(el);
-			fontSpecifier = window.getComputedStyle(el).font;
+			fontSpecifier = getFontFromComputedStyle(window.getComputedStyle(el));
 			el.remove();
 		}
 
@@ -128,7 +166,8 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 		
 		// position of span relative to containing box
 		let drawX = (spanBBox.left - textBBox.left) * options.pixelRatio;
-		let drawY = (spanBBox.top - textBBox.top) * options.pixelRatio + textMetrics.fontBoundingBoxAscent;
+		let drawY = (spanBBox.top - textBBox.top) * options.pixelRatio
+			+ (textMetrics.fontBoundingBoxAscent != null ? textMetrics.fontBoundingBoxAscent : 0);
 
 		ctx.fillText(
 			span.textContent,
