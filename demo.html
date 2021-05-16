@@ -71,13 +71,17 @@
 			testEl.style.fontSize = controlEl.querySelector('input#fontSize').value + 'px';
 			testEl.style.lineHeight = controlEl.querySelector('input#lineHeight').value;
 
+			let pixelRatio = parseFloat(controlEl.querySelector('input#pixelRatio').value);
 			htmlTextToCanvas(testEl.outerHTML, {
-				pixelRatio: parseFloat(controlEl.querySelector('input#pixelRatio').value),
+				pixelRatio: pixelRatio,
 				overrideCanvas: canvas,
 			});
 
 			canvas.style.position = 'absolute';
 			canvas.style.top = controlEl.querySelector('input#canvasOverlap').checked ? (testEl.offsetTop + 'px') : '';
+
+			canvas.style.width = (canvas.width / pixelRatio) + 'px';
+			canvas.style.height = (canvas.height / pixelRatio) + 'px';
 		}
 
 		renderCanvas();
