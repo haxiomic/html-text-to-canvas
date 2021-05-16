@@ -96,12 +96,14 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 
 	/** @type {HTMLElement} */
 	let el;
+	let shouldUnmark = true;
 	if (htmlOrElement instanceof HTMLElement) {
 		el = htmlOrElement;
 	} else {
 		el = document.createElement('span');
 		el.classList.toggle('__canvas_text__', true); // useful for debug
 		el.innerHTML = htmlOrElement;
+		shouldUnmark = false;
 	}
 
 	let removeElFromDom = false;
@@ -109,6 +111,8 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 		// use a parent el so we don't have to modify el's position to absolute
 		let parentEl = document.createElement('span');
 		parentEl.style.position = 'absolute';
+		parentEl.style.top = '0';
+		parentEl.style.left = '0';
 		document.body.appendChild(parentEl);
 		parentEl.appendChild(el);
 		removeElFromDom = true;
@@ -124,13 +128,15 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 		canvas = new OffscreenCanvas(textBBox.width * options.pixelRatio, textBBox.height * options.pixelRatio);
 	} else {
 		canvas = document.createElement('canvas');
-		canvas.width = textBBox.width * options.pixelRatio;
-		canvas.height = textBBox.height * options.pixelRatio;
 		canvas.style.width = textBBox.width + 'px';
 		canvas.style.height = textBBox.height + 'px';
 	}
 
+	canvas.width = textBBox.width * options.pixelRatio;
+	canvas.height = textBBox.height * options.pixelRatio;
+
 	let ctx = canvas.getContext('2d');
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 	// set background
 	let elStyle = window.getComputedStyle(el);
@@ -175,7 +181,9 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 		);
 	}
 	
-	unmarkCharacters(el);
+	if (shouldUnmark) {
+		unmarkCharacters(el);
+	}
 
 	if (removeElFromDom) {
 		el.remove();

@@ -28,7 +28,7 @@
 
 		let testEl = document.createElement('div');
 		testEl.contentEditable = 'true';
-		testEl.style.maxWidth = '600px';
+		testEl.style.width = '600px';
 		testEl.classList.toggle('__canvas_text__', true);
 		testEl.innerHTML = `
 			Hello <b>world</b> <i>testing</i>
@@ -69,20 +69,17 @@
 		controlEl.style.top = '0px';
 		document.body.appendChild(controlEl);
 
-		let canvas = null;
+		let canvas = document.createElement('canvas');
+		document.body.appendChild(canvas);
 		function renderCanvas() {
 			testEl.style.fontSize = controlEl.querySelector('input#fontSize').value + 'px';
 			testEl.style.lineHeight = controlEl.querySelector('input#lineHeight').value;
 
-			if (canvas != null) {
-				canvas.remove();
-			}
-
-			canvas = htmlTextToCanvas(testEl, {
+			htmlTextToCanvas(testEl.outerHTML, {
 				pixelRatio: parseFloat(controlEl.querySelector('input#pixelRatio').value),
+				overrideCanvas: canvas,
 			});
 
-			document.body.appendChild(canvas);
 			canvas.style.position = 'absolute';
 			canvas.style.top = controlEl.querySelector('input#canvasOverlap').checked ? (testEl.offsetTop + 'px') : '';
 			canvas.style.display = controlEl.querySelector('input#display').checked ? '' : 'none';
