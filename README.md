@@ -1,6 +1,6 @@
 # Draw HTML Text to Canvas
 
-<img width="300px" align="right" src="https://user-images.githubusercontent.com/3742992/118414852-df289980-b69e-11eb-93f3-37e12b512c7e.png">
+<img width="250px" align="right" src="https://user-images.githubusercontent.com/3742992/118414852-df289980-b69e-11eb-93f3-37e12b512c7e.png">
 
 Given a HTML string or HTMLElement, `htmlTextToCanvas()` returns a canvas with a replica of the text, including fonts, layout, formatting and colors draw using Context 2D
 
