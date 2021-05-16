@@ -37,25 +37,20 @@ type Options = {
 	 */
 	?overrideCanvas: HTMLCanvasElement | OffscreenCanvas,
 }
+
+function htmlTextToCanvas(htmlString: string, options?: Options): HTMLCanvasElement | OffscreenCanvas;
+function htmlTextToCanvas(htmlElement: HTMLElement, options?: Options): HTMLCanvasElement | OffscreenCanvas;
 ```
 
-### Call with a html string
-```typescript
-htmlTextToCanvas(htmlString, options): HTMLCanvasElement | OffscreenCanvas;
-```
+### Example: call with a html string
 
-Example usage
 ```typescript
 let canvas = htmlTextToCanvas('<h1>Header!</h1>', {pixelRatio: window.devicePixelRatio});
 document.body.appendChild(canvas);
 ```
 
-### Call with a html element
-```typescript
-htmlTextToCanvas(htmlElement, options): HTMLCanvasElement | OffscreenCanvas;
-```
+### Example: Call with a html element
 
-Example usage
 ```typescript
 let header = document.createElement('h1');
 header.innerHTML = 'Hello World!';
