@@ -58,10 +58,6 @@
 				<label for="canvasOverlap">Canvas Overlap</label>
 				<input type="checkbox" id="canvasOverlap" />
 			</div>
-			<div>
-				<label for="display">Canvas Visibility</label>
-				<input type="checkbox" id="display" checked />
-			</div>
 		`;
 		controlEl.style.position = 'absolute';
 		controlEl.style.fontFamily = 'sans-serif';
@@ -82,7 +78,6 @@
 
 			canvas.style.position = 'absolute';
 			canvas.style.top = controlEl.querySelector('input#canvasOverlap').checked ? (testEl.offsetTop + 'px') : '';
-			canvas.style.display = controlEl.querySelector('input#display').checked ? '' : 'none';
 		}
 
 		renderCanvas();
