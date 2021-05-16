@@ -38,7 +38,14 @@ type Options = {
 	?overrideCanvas: HTMLCanvasElement | OffscreenCanvas,
 }
 
+/**
+ * Draw a html string to canvas
+ */
 function htmlTextToCanvas(htmlString: string, options?: Options): HTMLCanvasElement | OffscreenCanvas;
+
+/**
+ * Draw a html element
+ */
 function htmlTextToCanvas(htmlElement: HTMLElement, options?: Options): HTMLCanvasElement | OffscreenCanvas;
 ```
 
