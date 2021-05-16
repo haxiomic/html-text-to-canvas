@@ -27,6 +27,7 @@
 	<script>
 
 		let testEl = document.createElement('div');
+		testEl.contentEditable = 'true';
 		testEl.style.maxWidth = '600px';
 		testEl.classList.toggle('__canvas_text__', true);
 		testEl.innerHTML = `
@@ -92,6 +93,8 @@
 		controlEl.querySelectorAll('input').forEach(el => el.addEventListener('input', (e) => {
 			renderCanvas();
 		}));
+
+		testEl.addEventListener("input", () => renderCanvas(), false);
 	</script>
 	
 </body>
