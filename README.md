@@ -39,9 +39,9 @@ type Options = {
 }
 ```
 
-### Call with a string
+### Call with a html string
 ```typescript
-htmlTextToCanvas(htmlString: string, options?: Options): HTMLCanvasElement | OffscreenCanvas;
+htmlTextToCanvas(htmlString, options): HTMLCanvasElement | OffscreenCanvas;
 ```
 
 Example usage
@@ -52,7 +52,7 @@ document.body.appendChild(canvas);
 
 ### Call with a html element
 ```typescript
-htmlTextToCanvas(htmlString: HTMLElement, options?: Options): HTMLCanvasElement | OffscreenCanvas;
+htmlTextToCanvas(htmlElement, options): HTMLCanvasElement | OffscreenCanvas;
 ```
 
 Example usage
