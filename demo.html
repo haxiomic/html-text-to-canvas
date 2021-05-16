@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<head>
+	<style>
+		/*
+		body {
+			background-color: #111;
+			color: white;
+		}
+		*/
+
+		canvas {
+			outline: 1px solid cyan;
+		}
+
+		.__canvas_text__ {
+			outline: 1px solid green;
+		}
+
+		.__char_group__ > span {
+			background-color: rgba(30, 120, 255, 0.05);
+			outline: 1px solid rgba(30, 120, 255, 0.05);
+		}
+	</style>
+</head>
+<body>
+	<script src="htmlTextToCanvas.js"> </script>
+	<script>
+
+		let testEl = document.createElement('div');
+		testEl.style.maxWidth = '600px';
+		testEl.classList.toggle('__canvas_text__', true);
+		testEl.innerHTML = `
+			Hello <b>world</b> <i>testing</i>
+			<p style="text-align: right; font-size: 2em; color: red; font-family: helvetica, sans-serif;">a paragraph</p>
+			<div style="text-align: center; font-size: 2rem;">
+				outer
+				<p style="text-shadow: #FFF 0px 0px 5px, #FFF 0px 0px 10px, #FFF 0px 0px 15px, #FF2D95 0px 0px 20px, #FF2D95 0px 0px 30px, #FF2D95 0px 0px 40px, #FF2D95 0px 0px 50px, #FF2D95 0px 0px 75px;">nested paragraph</p>
+			</div>
+		`;
+		document.body.appendChild(testEl);
+
+		let controlEl = document.createElement('div');
+		controlEl.innerHTML = `
+			<div>
+				<label for="fontSize">Font Size</label>
+				<input type="range" id="fontSize" min="0" max="400" value="25"/>
+			</div>
+			<div>
+				<label for="lineHeight">Line Height</label>
+				<input type="range" id="lineHeight" min="0" max="5" step="0.1" value="1.0" />
+			</div>
+			<div>
+				<label for="pixelRatio">Pixel Density</label>
+				<input type="range" id="pixelRatio" min="0.1" max="4" step="0.01" value="${window.devicePixelRatio || 1}"/>
+			</div>
+			<div>
+				<label for="canvasOverlap">Canvas Overlap</label>
+				<input type="checkbox" id="canvasOverlap" />
+			</div>
+			<div>
+				<label for="display">Canvas Visibility</label>
+				<input type="checkbox" id="display" checked />
+			</div>
+		`;
+		controlEl.style.position = 'absolute';
+		controlEl.style.fontFamily = 'sans-serif';
+		controlEl.style.right = '0px';
+		controlEl.style.top = '0px';
+		document.body.appendChild(controlEl);
+
+		let canvas = null;
+		function renderCanvas() {
+			testEl.style.fontSize = controlEl.querySelector('input#fontSize').value + 'px';
+			testEl.style.lineHeight = controlEl.querySelector('input#lineHeight').value;
+
+			if (canvas != null) {
+				canvas.remove();
+			}
+
+			canvas = htmlTextToCanvas(testEl, {
+				pixelRatio: parseFloat(controlEl.querySelector('input#pixelRatio').value),
+			});
+
+			document.body.appendChild(canvas);
+			canvas.style.position = 'absolute';
+			canvas.style.top = controlEl.querySelector('input#canvasOverlap').checked ? (testEl.offsetTop + 'px') : '';
+			canvas.style.display = controlEl.querySelector('input#display').checked ? '' : 'none';
+		}
+
+		renderCanvas();
+
+		controlEl.querySelectorAll('input').forEach(el => el.addEventListener('input', (e) => {
+			renderCanvas();
+		}));
+	</script>
+	
+</body>
