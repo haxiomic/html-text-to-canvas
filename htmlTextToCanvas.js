@@ -189,6 +189,7 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 		let chars = Array.from(text);
 
 		let textMetrics = ctx.measureText('a');
+		let yOffset = textMetrics.fontBoundingBoxAscent != null ? textMetrics.fontBoundingBoxAscent : 0;
 		
 		for (let i = 0; i < charGroup.__spans.length; i++) {
 			let span = charGroup.__spans[i];
@@ -196,8 +197,7 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 			let spanBBox = span.getBoundingClientRect();
 
 			let drawX = (spanBBox.left - textBBox.left) * options.pixelRatio;
-			let drawY = (spanBBox.top - textBBox.top) * options.pixelRatio
-				+ (textMetrics.fontBoundingBoxAscent != null ? textMetrics.fontBoundingBoxAscent : 0);
+			let drawY = (spanBBox.top - textBBox.top) * options.pixelRatio + yOffset;
 
 			ctx.fillText(
 				chars[i],
