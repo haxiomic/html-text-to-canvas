@@ -28,7 +28,7 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 				case node.TEXT_NODE: {
 					/** @type {Text} */
 					let textNode = node;
-					let chars = textNode.data.split('');
+					let chars = Array.from(textNode.data); // split('') but support emojis and others
 					let replacement = document.createElement('span');
 					replacement.classList.add('__char_group__');
 					chars.forEach(c => {
