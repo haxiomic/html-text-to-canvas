@@ -1,4 +1,13 @@
 /**
+ * htmlTextToCanvas
+ * 
+ * @author haxiomic (George Corney)
+ * @license MIT
+ * @version 1.0.0
+ * @website https://github.com/haxiomic/html-text-to-canvas
+ */
+
+/**
  * Given a HTML string or HTMLElement, returns a canvas with a replica of the text, including fonts, layout, formatting and colors
  * @param {string | HTMLElement} htmlOrElement
  * @param {{
