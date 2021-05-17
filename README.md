@@ -8,6 +8,8 @@ This technique leverages the browser's built-in text layout engine so all text l
 
 Another approach is to first convert the html to SVG, embedding fonts and images before drawing the SVG to canvas – this is more fully featured but more complex. For example: https://github.com/bubkoo/html-to-image
 
+Be aware this approach only draws text. For backgrounds, borders, images and other styling you will need to use an approach like [html-to-image](https://github.com/bubkoo/html-to-image)
+
 [Live demo](https://haxiomic.github.io/html-text-to-canvas/demo.html)
 
 -----
