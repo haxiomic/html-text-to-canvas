@@ -38,15 +38,17 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 					/** @type {Text} */
 					let textNode = node;
 					let chars = Array.from(textNode.data); // split('') but support emojis and others
-					let replacement = document.createElement('span');
-					replacement.classList.add('__char_group__');
-					chars.forEach(c => {
+					let charGroup = document.createElement('span');
+					charGroup.classList.add('__char_group__');
+					charGroup.__spans = new Array(chars.length);
+					for (let i = 0; i < chars.length; i++) {
 						let charSpan = document.createElement('span');
-						charSpan.innerHTML = c;
-						replacement.appendChild(charSpan);
-					});
-					charGroups.push(replacement);
-					textNode.replaceWith(replacement);
+						charSpan.innerHTML = chars[i];
+						charGroup.appendChild(charSpan);
+						charGroup.__spans[i] = charSpan;
+					}
+					charGroups.push(charGroup);
+					textNode.replaceWith(charGroup);
 				} break;
 				default: {
 					charGroups = charGroups.concat(markCharacters(node));
@@ -171,9 +173,25 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 		ctx.fillStyle = style.color;
 		ctx.textBaseline = "top";
 
+		// apply text transform
+		let text = charGroup.textContent;
+		switch (style.textTransform) {
+			case 'uppercase': {
+				text = text.toUpperCase();
+			} break;
+			case 'lowercase': {
+				text = text.toLowerCase();
+			} break;
+			case 'capitalize': {
+				text = text.replace(/\b\w/g, l => l.toUpperCase());
+			} break;
+		}
+		let chars = Array.from(text);
+
 		let textMetrics = ctx.measureText('a');
 		
-		for (let span of charGroup.children) {
+		for (let i = 0; i < charGroup.__spans.length; i++) {
+			let span = charGroup.__spans[i];
 			// position of span relative to containing box
 			let spanBBox = span.getBoundingClientRect();
 
@@ -182,7 +200,7 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 				+ (textMetrics.fontBoundingBoxAscent != null ? textMetrics.fontBoundingBoxAscent : 0);
 
 			ctx.fillText(
-				span.textContent,
+				chars[i],
 				drawX, drawY
 			);
 		}
