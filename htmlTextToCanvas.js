@@ -31,7 +31,7 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 	 */
 	function markCharacters(el) {
 		/** @type {HTMLSpanElement[]} */
-		let charSpans = [];
+		let charGroups = [];
 		for (let node of el.childNodes) {
 			switch (node.nodeType) {
 				case node.TEXT_NODE: {
@@ -43,24 +43,25 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 					chars.forEach(c => {
 						let charSpan = document.createElement('span');
 						charSpan.innerHTML = c;
-						charSpans.push(charSpan);
 						replacement.appendChild(charSpan);
 					});
+					charGroups.push(replacement);
 					textNode.replaceWith(replacement);
 				} break;
 				default: {
-					charSpans = charSpans.concat(markCharacters(node));
+					charGroups = charGroups.concat(markCharacters(node));
 				} break;
 			}
 		}
-		return charSpans;
+		return charGroups;
 	}
 
 	/**
-	 * @param {HTMLElement} el 
+	 * @param {HTMLElement} el
+	 * @param {HTMLElement[]} charGroups
 	 */
-	function unmarkCharacters(el) {
-		for (let charGroup of el.querySelectorAll('.__char_group__')) {
+	function unmarkCharacters(el, charGroups) {
+		for (let charGroup of charGroups) {
 			charGroup.replaceWith(charGroup.textContent);
 		}
 	}
@@ -127,7 +128,7 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 		removeElFromDom = true;
 	}
 
-	let characterSpans = markCharacters(el);
+	let charGroups = markCharacters(el);
 
 	let textBBox = el.getBoundingClientRect();
 	let canvas;
@@ -152,10 +153,8 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 	ctx.fillStyle = elStyle.backgroundColor;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-	for (let span of characterSpans) {
-		let spanBBox = span.getBoundingClientRect();
-
-		let style = window.getComputedStyle(span);
+	for (let charGroup of charGroups) {
+		let style = window.getComputedStyle(charGroup);
 
 		let fontSpecifier = getFontFromComputedStyle(style);
 
@@ -175,23 +174,27 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 
 		ctx.font = fontSpecifier;
 		ctx.fillStyle = style.color;
-
 		ctx.textBaseline = "top";
-		let textMetrics = ctx.measureText(span.textContent);
-		
-		// position of span relative to containing box
-		let drawX = (spanBBox.left - textBBox.left) * options.pixelRatio;
-		let drawY = (spanBBox.top - textBBox.top) * options.pixelRatio
-			+ (textMetrics.fontBoundingBoxAscent != null ? textMetrics.fontBoundingBoxAscent : 0);
 
-		ctx.fillText(
-			span.textContent,
-			drawX, drawY
-		);
+		let textMetrics = ctx.measureText('a');
+		
+		for (let span of charGroup.children) {
+			// position of span relative to containing box
+			let spanBBox = span.getBoundingClientRect();
+
+			let drawX = (spanBBox.left - textBBox.left) * options.pixelRatio;
+			let drawY = (spanBBox.top - textBBox.top) * options.pixelRatio
+				+ (textMetrics.fontBoundingBoxAscent != null ? textMetrics.fontBoundingBoxAscent : 0);
+
+			ctx.fillText(
+				span.textContent,
+				drawX, drawY
+			);
+		}
 	}
 	
 	if (shouldUnmark) {
-		unmarkCharacters(el);
+		unmarkCharacters(el, charGroups);
 	}
 
 	if (removeElFromDom) {
