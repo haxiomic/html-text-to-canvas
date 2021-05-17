@@ -3,7 +3,7 @@
  * 
  * @author haxiomic (George Corney)
  * @license MIT
- * @version 1.0.1
+ * @version 1.1.0
  * @website https://github.com/haxiomic/html-text-to-canvas
  */
 
