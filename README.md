@@ -6,6 +6,8 @@ Given a HTML string or HTMLElement, `htmlTextToCanvas()` returns a canvas with a
 
 This technique leverages the browser's built-in text layout engine so all text layouts are supported
 
+Another approach is to first convert the html to SVG, embedding fonts and images before drawing the SVG to canvas – this is more fully featured but more complex. For example: https://github.com/bubkoo/html-to-image
+
 For example, you may want to use this to easily generate formatted text for a WebGL game
 
 [Live demo](https://haxiomic.github.io/html-text-to-canvas/demo.html)
