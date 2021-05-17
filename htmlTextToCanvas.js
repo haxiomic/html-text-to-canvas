@@ -70,14 +70,14 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 	 * Firefox currently does not generate a .font property after getComputedStyle so we much assemble one manually
 	 * See https://stackoverflow.com/a/58533415
 	 */
-	function getFontFromComputedStyle(computedStyle) {
+	function getFontFromComputedStyle(computedStyle, overrideFontSize) {
 		let font = computedStyle.font;
 		// Firefox returns the empty string for .font, so create the .font property manually
-		if (font === '') {
+		if (font === '' || overrideFontSize) {
 				// Firefox uses percentages for font-stretch, but Canvas does not accept percentages
 				// so convert to keywords, as listed at:
 				//   https://developer.mozilla.org/en-US/docs/Web/CSS/font-stretch
-				let fontStretchLookupTable = {
+				const fontStretchLookupTable = {
 						'50%': 'ultra-condensed',
 						'62.5%': 'extra-condensed',
 						'75%': 'condensed',
@@ -92,12 +92,12 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 				// 'normal' as a last resort.
 				let fontStretch = fontStretchLookupTable.hasOwnProperty(computedStyle.fontStretch)
 						? fontStretchLookupTable[computedStyle.fontStretch]
-						: 'normal';
+						: computedStyle.fontStretch;
 				font = computedStyle.fontStyle
 						+ ' ' + computedStyle.fontVariant
 						+ ' ' + computedStyle.fontWeight
 						+ ' ' + fontStretch
-						+ ' ' + computedStyle.fontSize
+						+ ' ' + (overrideFontSize || computedStyle.fontSize)
 						+ '/' + computedStyle.lineHeight
 						+ ' ' + computedStyle.fontFamily;
 		}
@@ -164,12 +164,7 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 		// if pixel ratio != 1.0 we need to adjust the font size
 		// simple technique is to use a temporary element to manage the css parsing for us
 		if (options.pixelRatio !== 1.0) {
-			let el = document.createElement('span');
-			el.style.font = style.font;
-			el.style.fontSize = fontSizeValue * options.pixelRatio + fontSizeUnit;
-			document.body.appendChild(el);
-			fontSpecifier = getFontFromComputedStyle(window.getComputedStyle(el));
-			el.remove();
+			fontSpecifier = getFontFromComputedStyle(style, fontSizeValue * options.pixelRatio + fontSizeUnit);
 		}
 
 		ctx.font = fontSpecifier;
