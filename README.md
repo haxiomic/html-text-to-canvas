@@ -4,7 +4,7 @@
 
 Given a HTML string or HTMLElement, `htmlTextToCanvas()` returns a canvas with a replica of the text, including fonts, layout, formatting and colors draw using Context 2D
 
-This technique leverages the browser's built-in text layout engine so all text layouts are supported
+This technique leverages the browser's built-in text layout engine so all text layouts are supported. It works by determining the location and style of each character and drawing them individually
 
 Another approach is to first convert the html to SVG, embedding fonts and images before drawing the SVG to canvas – this is more fully featured but more complex. For example: https://github.com/bubkoo/html-to-image
 
