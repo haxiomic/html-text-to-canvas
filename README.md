@@ -51,14 +51,14 @@ function htmlTextToCanvas(htmlString: string, options?: Options): HTMLCanvasElem
 function htmlTextToCanvas(htmlElement: HTMLElement, options?: Options): HTMLCanvasElement | OffscreenCanvas;
 ```
 
-### Example: call with a html string
+### Example: Canvas from a html string
 
 ```typescript
 let canvas = htmlTextToCanvas('<h1>Header!</h1>', {pixelRatio: window.devicePixelRatio});
 document.body.appendChild(canvas);
 ```
 
-### Example: Call with a html element
+### Example: Canvas from a html element
 
 ```typescript
 let header = document.createElement('h1');
