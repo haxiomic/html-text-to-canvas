@@ -118,16 +118,18 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 		shouldUnmark = false;
 	}
 
-	let removeElFromDom = false;
+	let temporaryDomEl = null;
 	if (!el.isConnected) {
 		// use a parent el so we don't have to modify el's position to absolute
 		let parentEl = document.createElement('span');
 		parentEl.style.position = 'absolute';
 		parentEl.style.top = '0';
 		parentEl.style.left = '0';
-		document.body.appendChild(parentEl);
 		parentEl.appendChild(el);
-		removeElFromDom = true;
+
+		// remove this element from the dom when finished
+		document.body.appendChild(parentEl);
+		temporaryDomEl = parentEl;
 	}
 
 	let charGroups = markCharacters(el);
@@ -210,8 +212,8 @@ function htmlTextToCanvas(htmlOrElement, options = {}) {
 		unmarkCharacters(el, charGroups);
 	}
 
-	if (removeElFromDom) {
-		el.remove();
+	if (temporaryDomEl != null) {
+		temporaryDomEl.remove();
 	}
 
 	return canvas;
